@@ -12,26 +12,31 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.JSONObject;
+
 @Path("/")
 public class EgkRelayService {
 	@POST
 	@Path("/terminal")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response receiveEgkData(InputStream incomingData) {
-		StringBuilder crunchifyBuilder = new StringBuilder();
+		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
 			String line = null;
 			while ((line = in.readLine()) != null) {
-				crunchifyBuilder.append(line);
+				stringBuilder.append(line);
 			}
 		} catch (Exception e) {
 			System.out.println("Error Parsing: - ");
 		}
-		System.out.println("Data Received: " + crunchifyBuilder.toString());
+		
+		JSONObject jsonObject = new JSONObject(stringBuilder);
+		
+		System.out.println("eGK data received: " + jsonObject.toString());
 
 		// return HTTP response 200 in case of success
-		return Response.status(200).entity(crunchifyBuilder.toString()).build();
+		return Response.status(200).entity(stringBuilder.toString()).build();
 	}
 
 	@GET
