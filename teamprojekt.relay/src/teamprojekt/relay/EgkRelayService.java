@@ -1,6 +1,7 @@
 package teamprojekt.relay;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -13,6 +14,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.gecko.egkfeuer.model.EgkPatient;
 
 @Path("/")
 public class EgkRelayService {
@@ -30,13 +38,32 @@ public class EgkRelayService {
 		} catch (Exception e) {
 			System.out.println("Error Parsing: - ");
 		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		EgkPatient egkData = null;
+
+		try {
+			egkData = mapper.readValue(stringBuilder.toString(), EgkPatient.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		JSONObject jsonObject = new JSONObject(stringBuilder);
-		
-		System.out.println("eGK data received: " + jsonObject.toString());
+		try {
+			System.out.println("eGK data received: " + mapper.writeValueAsString(egkData));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// return HTTP response 200 in case of success
-		return Response.status(200).entity(stringBuilder.toString()).build();
+		return Response.status(200).entity("1234567890").build();
 	}
 
 	@GET

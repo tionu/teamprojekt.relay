@@ -1,16 +1,21 @@
 package de.gecko.egkfeuer.model.ekg.v51;
 
+import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import javax.xml.bind.JAXB;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.gecko.egkfeuer.model.EgkPatient;
 import de.gecko.egkfeuer.model.ekg.AbstractToPatientConverter;
 import de.gecko.egkfeuer.model.ekg.v51.pd.UCPersoenlicheVersichertendatenXML;
 import de.gecko.egkfeuer.model.ekg.v51.vd.UCAllgemeineVersicherungsdatenXML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXB;
-import java.io.StringReader;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 
 public class ToPatientConverterV51 extends AbstractToPatientConverter
@@ -53,8 +58,14 @@ public class ToPatientConverterV51 extends AbstractToPatientConverter
 		String vorsatzwort = pd.getVersicherter().getPerson().getVorsatzwort();
 		String namenszusatz = pd.getVersicherter().getPerson().getNamenszusatz();
 
-		LocalDate geburtsdatum = LocalDate.parse(pd.getVersicherter().getPerson().getGeburtsdatum(),
-				DateTimeFormatter.ofPattern("yyyyMMdd"));
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		Date geburtsdatum = new Date();
+		try {
+			geburtsdatum = df.parse(pd.getVersicherter().getPerson().getGeburtsdatum());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String geschlecht = pd.getVersicherter().getPerson().getGeschlecht();
 
 		String postleitzahl = pd.getVersicherter().getPerson().getStrassenAdresse().getPostleitzahl();
