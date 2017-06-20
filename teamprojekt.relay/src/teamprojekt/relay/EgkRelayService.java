@@ -73,7 +73,7 @@ public class EgkRelayService {
 	@GET
 	@Path("/client")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEgkData(@QueryParam("id") String ressourceId, InputStream incomingData) {
+	public Response getEgkData(@QueryParam("id") String ressourceId) {
 
 		System.out.println("client request: id = " + ressourceId);
 
